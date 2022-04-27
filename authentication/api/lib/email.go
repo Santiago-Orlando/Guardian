@@ -3,13 +3,14 @@ package lib
 import (
 	"fmt"
 	"net/smtp"
+	"os"
 )
 
 func SendEmail(email string, token string) {
 
 	// Sender data.
-	from := "seorlando33@gmail.com"
-	password := "ghyenliiygwdidgb"
+	from := os.Getenv("EMAIL")
+	password := os.Getenv("EMAIL_PW")
 
 	// Receiver email address.
 	to := []string{

@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"go.mongodb.org/mongo-driver/bson"
-
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
 	"Guardian/authentication/api/database"
@@ -25,17 +25,20 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	collections, err := database.GetConnection("users")
+	collections := database.GetConnection()
 	if err != nil {
 		fmt.Fprintf(w, "error db -> ", err)
 		return
 	}
 
 	token, err := lib.JWTGenerator(email.Email)
+	if err != nil {
+		fmt.Fprintf(w, "error db -> ", err)
+		return
+	}
 
-
-	filter := bson.D{{"email", email.Email}}
-	update := bson.D{{"$set", bson.D{{"recoveryToken", token}} }}
+	filter := bson.D{primitive.E{Key: "email", Value: email.Email}}
+	update := bson.D{{"$set", bson.D{primitive.E{Key: "recoveryToken", Value: token}}}}
 
 	user := &m.User{}
 
@@ -59,13 +62,13 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "error -> ", err)
 	}
 
- 	err = lib.JWTValidator(data.Token)
+	err = lib.JWTValidator(data.Token)
 	if err != nil {
 		w.WriteHeader(401)
 		return
 	}
 
-	collections, err := database.GetConnection("users")
+	collections := database.GetConnection()
 	if err != nil {
 		fmt.Fprintf(w, "error db -> ", err)
 		return
@@ -76,8 +79,8 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 
-	filter := bson.D{{"recoveryToken", data.Token}}
-	update := bson.D{{"$set", bson.D{{"password", string(password)}, {"recoveryToken", ""} }}}
+	filter := bson.D{primitive.E{Key: "recoveryToken", Value: data.Token}}
+	update := bson.D{{"$set", bson.D{primitive.E{Key: "password", Value: string(password)}, {Key: "recoveryToken", Value: ""}}}}
 
 	var user bson.M
 

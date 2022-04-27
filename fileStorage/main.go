@@ -8,12 +8,12 @@ import (
 	"syscall"
 	"time"
 
-	"Guardian/authentication/api"
+	"Guardian/fileStorage/api"
 )
 
 func main() {
 
-	l := log.New(os.Stdout, "Authentication Service ", log.LstdFlags)
+	l := log.New(os.Stdout, "---> FileStorage Service ", log.LstdFlags)
 
 	port := os.Getenv("PORT")
 	srv := api.NewServer(port)

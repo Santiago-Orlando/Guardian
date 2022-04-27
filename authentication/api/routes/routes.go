@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"Guardian/authentication/api/handlers"
 	"net/http"
+	
+	"Guardian/authentication/api/handlers"
 )
 
 func Routes() {

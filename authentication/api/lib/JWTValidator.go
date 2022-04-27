@@ -1,18 +1,20 @@
 package lib
 
 import (
-	m "Guardian/authentication/api/models"
+	"os"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/pkg/errors"
+
+	m "Guardian/authentication/api/models"
 )
 
 func JWTValidator(token string) error {
-	
+
 	jwtStructure := &m.JWTStructure{}
 
 	parsedToken, err := jwt.ParseWithClaims(token, jwtStructure, func(tkn *jwt.Token) (interface{}, error) {
-		return []byte("secret"), nil
+		return []byte(os.Getenv("JWTSecret")), nil
 	})
 	if err != nil {
 		return err

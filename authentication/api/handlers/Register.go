@@ -14,14 +14,12 @@ import (
 
 func Register(w http.ResponseWriter, r *http.Request) {
 
-	connection, err := db.GetConnection("users")
-	if err != nil {
-		fmt.Println(err)
-	}
+	connection := db.GetConnection()
+	
 
 	user := &m.User{}
 
-	err = json.NewDecoder(r.Body).Decode(user)
+	err := json.NewDecoder(r.Body).Decode(user)
 	if err != nil {
 		fmt.Println(err)
 	}

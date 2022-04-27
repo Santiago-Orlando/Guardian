@@ -1,20 +1,21 @@
 package lib
 
 import (
+	"os"
 	"time"
 
-	m "Guardian/authentication/api/models"
-
 	"github.com/dgrijalva/jwt-go"
+
+	m "Guardian/authentication/api/models"
 )
 
 
-func JWTGenerator(email string) (string, error) {
+func JWTGenerator(ID string) (string, error) {
 
-	expirationTime := time.Now()//.Add(336 * time.Hour) // 14 days
+	expirationTime := time.Now().Add(336 * time.Hour) // 14 days
 
 	JWT := &m.JWTStructure{
-		Email: email,
+		ID: ID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expirationTime.Unix(),
 		},
@@ -22,7 +23,7 @@ func JWTGenerator(email string) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, JWT)
 
-	JWTKey := []byte("secret") // os 
+	JWTKey := []byte(os.Getenv("JWTSecret"))
 
 	signedToken, err := token.SignedString(JWTKey)
 	if err != nil {

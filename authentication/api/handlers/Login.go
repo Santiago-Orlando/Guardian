@@ -3,9 +3,9 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 
+	"github.com/go-playground/validator/v10"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
@@ -17,6 +17,10 @@ import (
 
 func Login(w http.ResponseWriter, r *http.Request) {
 
+	if r.Method != "POST" {
+		w.WriteHeader(405)
+	}
+
 	// Create database connection
 	connection := db.GetConnection()
 
@@ -25,28 +29,41 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(userData)
 	if err != nil {
-		fmt.Println(err)
+		lib.ErrorHandler(err, "system")
+		w.WriteHeader(500)
+		return
+	}
+
+	validate := validator.New()
+	
+	err = validate.Struct(userData)
+	if err != nil {
+		lib.ErrorHandler(err, "authentication")
+		w.WriteHeader(406)
 		return
 	}
 	
 	// Find User in database
 	err = connection.FindOne(context.TODO(), bson.D{primitive.E{Key: "email", Value: userData.Email}}).Decode(user)
 	if err != nil {
-		fmt.Println(err)
+		lib.ErrorHandler(err, "database")
+		w.WriteHeader(500)
 		return
 	}
 
 	// Compare the password that was send with the one in the DB
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.Password))
 	if err != nil {
-		fmt.Println(err)
+		lib.ErrorHandler(err, "system")
+		w.WriteHeader(500)
 		return
 	}
 
 	//Generate Token
 	token, err := lib.JWTGenerator(user.ID)
 	if err != nil {
-		fmt.Println(err)
+		lib.ErrorHandler(err, "system")
+		w.WriteHeader(500)
 		return
 	}
 

@@ -1,0 +1,150 @@
+consumes:
+- application/json
+host: localhost
+info:
+  contact:
+    email: santiagoelias.orlando@gmail.com
+    name: Santiago Orlando
+    url: https://www.linkedin.com/in/seorlando/
+  description: |-
+    The purpose of this service is Register, Login,
+    and Password recover.
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  termsOfService: |-
+    There are no TOS at this moment, use at your own risk
+    i take no responsability
+  title: Authentication API.
+  version: 1.0.0
+paths:
+  /forgotPassword:
+    post:
+      description: Send email to user with a recovery token
+      operationId: Forgot Password
+      parameters:
+        - in: body
+          name: forgotPassword
+          description: The user email address
+          schema:
+            type: object
+            required:
+              - email
+            properties:
+              email:
+                type: string
+                example: Jhon@gmail.com
+      responses:
+        '200':
+          description: successful email sending!
+        '405':
+          description: method don't implemented, please use POST
+        '406':
+          description: Invalid email
+        '500':
+          description: Internal server error
+  /login:
+    post:
+      description: Logging users
+      operationId: Login
+      parameters:
+        - in: body
+          name: login
+          description: The user login data
+          schema:
+            type: object
+            required:
+              - email
+              - password
+            properties:
+              email:
+                type: string
+                example: Jhon@gmail.com
+              password:
+                type: string
+                minLength: 8
+                maxLength: 60
+                example: SuperDifficultPassword
+      responses:
+        '200':
+          description: successful data sending!
+        '405':
+          description: method don't implemented, please use POST
+        '406':
+          description: Invalid data
+        '500':
+          description: Internal server error
+  /register:
+    post:
+      description: Register users
+      operationId: Register
+      parameters:
+        - in: body
+          name: user
+          description: The user to create
+          schema:
+            type: object
+            required:
+              - username
+              - email
+              - password
+            properties:
+              username:
+                type: string
+                minLength: 4
+                maxLength: 30
+                example: Jhon
+              email:
+                type: string
+                example: Jhon@gmail.com
+              password:
+                type: string
+                minLength: 8
+                maxLength: 60
+                example: SuperDifficultPassword
+      responses:
+        '200':
+          description: successful data sending!
+        '405':
+          description: method don't implemented, please use POST
+        '406':
+          description: Invalid data
+        '500':
+          description: Internal server error
+  /updatePassword:
+    put:
+      description: Update the user password
+      operationId: Update Password
+      parameters:
+        - in: body
+          name: updatePassword
+          description: The user new password and recovery token
+          schema:
+            type: object
+            required:
+              - token
+              - newPassword
+            properties:
+              token:
+                type: string
+                example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6ImJhcG9yb2lkZUBob3RtYWlsLmNvbSIsImV4cCI6MTY1MjA3MDczNH0.wB4s3BvDZZidiA8jSnwaJVLzWWzbki01O_Nv2x8vbWs
+              newPassword:
+                type: string
+                minLength: 8
+                maxLength: 60
+                example: SuperDifficultNewPassword
+      responses:
+        '200':
+          description: successful data sending!
+        '405':
+          description: method don't implemented, please use PUT
+        '406':
+          description: Invalid data
+        '500':
+          description: Internal server error
+produces:
+- application/json
+schemes:
+- http
+- https
+swagger: "2.0"

@@ -8,6 +8,7 @@ import (
 
 	"github.com/dgrijalva/jwt-go"
 
+	"Guardian/fileStorage/api/lib"
 	m "Guardian/fileStorage/api/models"
 )
 
@@ -17,39 +18,39 @@ func JWTValidator(next http.HandlerFunc) http.HandlerFunc {
 		cookie, err := r.Cookie("jwt")
 		if err != nil {
 			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
+				lib.ErrorHandler(err, "authentication")
+				w.WriteHeader(401)
 				return
 			}
-			w.WriteHeader(http.StatusBadRequest)
+			lib.ErrorHandler(err, "web")
+			w.WriteHeader(400)
 			return
 		}
 		token := cookie.Value
 		jwtStructure := &m.JWTStructure{}
 
 		parsedToken, err := jwt.ParseWithClaims(token, jwtStructure, func(tkn *jwt.Token) (interface{}, error) {
-			return []byte(os.Getenv("JWTSecret")), nil // os
+			return []byte(os.Getenv("JWTSecret")), nil
 		})
 
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
-				w.WriteHeader(http.StatusUnauthorized)
+				w.WriteHeader(401)
 				fmt.Fprintf(w, "%v", err)
 				return
 			}
-			w.WriteHeader(http.StatusBadRequest)
-			fmt.Println("entre acá", err)
+			w.WriteHeader(400)
 			return
 		}
 
 		if !parsedToken.Valid {
-			w.WriteHeader(http.StatusUnauthorized)
+			w.WriteHeader(401)
 			fmt.Fprintf(w, "%v", err)
 			return
 		}
 
 		ctxValues := context.WithValue(r.Context(), "id", jwtStructure.ID)
 		r = r.WithContext(ctxValues)
-
 
 		next(w, r)
 	})

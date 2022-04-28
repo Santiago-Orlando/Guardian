@@ -1,0 +1,113 @@
+consumes:
+- application/json
+host: localhost
+securityDefinitions:
+  myCookie:
+    type: apiKey
+    in: header
+    name: jwt
+info:
+  contact:
+    email: santiagoelias.orlando@gmail.com
+    name: Santiago Orlando
+    url: https://www.linkedin.com/in/seorlando/
+  description: |-
+    The purpose of this service is Store and serve files.
+  license:
+    name: MIT
+    url: http://opensource.org/licenses/MIT
+  termsOfService: |-
+    There are no TOS at this moment, use at your own risk
+    i take no responsibility
+  title: Files Storage API.
+  version: 1.0.0
+paths:
+  /uploadMultipart:
+    post:
+      description: Upload multipart file
+      operationId: Upload Multipart
+      security:
+        - myCookie: []
+      parameters:
+        - in: body
+          name: Upload Multipart
+          description: "**¡Remember this is a protected route!** Make sure you have the Cookie with the name jwt."
+          schema:
+            type: object
+            required:
+              - file
+            properties:
+              file:
+                type: multipart
+                example: CatMeme1134.png
+      responses:
+        '201':
+          description: successful file upload!
+        '202':
+          description: successful file is already in DB
+        '400':
+          description: File too big or File is not multipart
+        '405':
+          description: method don't implemented, please use POST
+        '406':
+          description: Invalid filename.
+        '500':
+          description: Internal server error
+  /getFile:
+    get:
+      description: Send File
+      operationId: Send File
+      security:
+        - myCookie: []
+      parameters:
+        - in: body
+          name: "**¡Remember this is a protected route!** Make sure you have the Cookie with the name jwt."
+          description: Send files to the user
+          schema:
+            type: object
+            required:
+              - file
+            properties:
+              file:
+                type: string
+                example: CatMeme1134.png
+      responses:
+        '200':
+          description: successful data sending!
+        '405':
+          description: method don't implemented, please use GET
+        '406':
+          description: Invalid filename
+        '500':
+          description: Internal server error
+  /uploadSinglepart:
+    post:
+      description: Singlepart Upload
+      operationId: Singlepart Upload
+      security:
+        - myCookie: []
+      parameters:
+        - in: query
+          name: filename
+          type: string
+          required: true
+          description: Name of the uploaded file.
+      responses:
+        '201':
+          description: successful data sending!
+        '202':
+          description: successful file is already in DB
+        '400':
+          description: Bad request!
+        '405':
+          description: method don't implemented, please use POST
+        '406':
+          description: Invalid filename
+        '500':
+          description: Internal server error
+produces:
+- application/json
+schemes:
+- http
+- https
+swagger: "2.0"

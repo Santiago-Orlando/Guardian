@@ -1,7 +1,6 @@
 package lib
 
 import (
-	"fmt"
 	"net/smtp"
 	"os"
 )
@@ -32,9 +31,7 @@ func SendEmail(email string, token string) {
 	// Sending email.
 	err := smtp.SendMail(address, auth, from, to, message)
 	if err != nil {
-		fmt.Println(err)
+		ErrorHandler(err, "mail")
 		return
 	}
-
 }
-//feMG9w==

@@ -37,7 +37,7 @@ func SinglepartFileStorage(w http.ResponseWriter, r *http.Request) {
 
 	unixTime := strconv.FormatInt(time.Now().UnixNano(), 10)
 	newFilename := unixTime + filepath.Ext(filename)
-	path := "./uploads/" + newFilename
+	path := "./fileStorage/uploads/" + newFilename
 
 
 	file, err := ioutil.ReadAll(r.Body)

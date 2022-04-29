@@ -37,7 +37,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	err = validate.Struct(user)
 	if err != nil {
 		lib.ErrorHandler(err, "authentication")
-		w.WriteHeader(401)
+		w.WriteHeader(406)
 		return
 	}
 

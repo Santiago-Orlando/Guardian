@@ -15,8 +15,6 @@ import (
 	m "Guardian/authentication/api/models"
 )
 
-// swagger:route POST /forgotPassword Forgot_Password
-// Send email to user with a recovery token
 
 func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 
@@ -63,8 +61,8 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 
 	user := &m.User{}
 
-	result := collections.FindOneAndUpdate(context.TODO(), filter, update).Decode(user)
-	if result != nil {
+	err = collections.FindOneAndUpdate(context.TODO(), filter, update).Decode(user)
+	if err != nil {
 		lib.ErrorHandler(err, "system")
 		w.WriteHeader(404)
 		return

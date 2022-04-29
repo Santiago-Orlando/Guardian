@@ -1,24 +1,24 @@
-CREATE TABLE database (
+CREATE TABLE IF NOT EXISTS database (
     id          SERIAL          NOT NULL,
     err         TEXT            NOT NULL
 );
 
-CREATE TABLE system (
+CREATE TABLE IF NOT EXISTS system (
     id          SERIAL          NOT NULL,
     err         TEXT            NOT NULL
 );
 
-CREATE TABLE email (
+CREATE TABLE IF NOT EXISTS email (
     id          SERIAL          NOT NULL,
     err         TEXT            NOT NULL
 );
 
-CREATE TABLE web (
+CREATE TABLE IF NOT EXISTS web (
     id          SERIAL          NOT NULL,
     err         TEXT            NOT NULL
 );
 
-CREATE TABLE authentication (
+CREATE TABLE IF NOT EXISTS authentication (
     id          SERIAL          NOT NULL,
     err         TEXT            NOT NULL
 );

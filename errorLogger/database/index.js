@@ -2,13 +2,13 @@ import pg from "pg"
 
 
 const { Pool } = pg
-const { USER, HOST, DATABASE, PASSWORD } = process.env
+const { USER, POSTGRESQL_URI, POSTGRESQL_PASSWORD } = process.env
 
 const credentials = {
   user: USER || "postgres",
-  host: HOST || "localhost",
-  database: DATABASE || "Guardian_Errors",
-  password: PASSWORD || "", // Your password
+  host: POSTGRESQL_URI || "localhost",
+  database: "Guardian_Errors",
+  password: POSTGRESQL_PASSWORD || "", // Your password
   port: 5432,
 }
 

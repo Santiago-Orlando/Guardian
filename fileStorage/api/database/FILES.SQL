@@ -1,6 +1,4 @@
 
-CREATE DATABASE Guardian_Files WITH ENCODING = 'UTF8';
-
 CREATE TABLE IF NOT EXISTS files (
     id          serial       NOT NULL,
     name        VARCHAR(150) NOT NULL,

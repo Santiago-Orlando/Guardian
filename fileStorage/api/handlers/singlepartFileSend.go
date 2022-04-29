@@ -42,10 +42,10 @@ func FileSender(w http.ResponseWriter, r *http.Request) {
 
 	serverName := lib.GetFileFromDB(userID, filename.Filename)
 
-	file, err := os.Open("./uploads/" + serverName)
+	file, err := os.Open("./fileStorage/uploads/" + serverName)
 	if err != nil {
-		lib.ErrorHandler(err, "system")
-		w.WriteHeader(500)
+		lib.ErrorHandler(err, "web")
+		w.WriteHeader(400)
 		return
 	}
 	data, err := ioutil.ReadAll(file)

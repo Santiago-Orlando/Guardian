@@ -8,8 +8,8 @@ import (
 func SendEmail(email string, token string) {
 
 	// Sender data.
-	from := os.Getenv("EMAIL")
-	password := os.Getenv("EMAIL_PW")
+	from := os.Getenv("GMAIL")
+	password := os.Getenv("GMAIL_PW")
 
 	// Receiver email address.
 	to := []string{

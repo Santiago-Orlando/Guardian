@@ -10,7 +10,7 @@ import (
 
 func YamlServer(w http.ResponseWriter, r *http.Request) {
 
-	file, err := os.Open("./swagger.yaml")
+	file, err := os.Open("./fileStorage/swagger.yaml")
 	if err != nil {
 		lib.ErrorHandler(err, "system")
 		w.WriteHeader(500)

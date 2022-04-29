@@ -15,7 +15,7 @@ func main() {
 
 	l := log.New(os.Stdout, "Authentication Service ", log.LstdFlags)
 
-	port := os.Getenv("PORT")
+	port := os.Getenv("PORT_AUTHENTICATION_SERVICE")
 	srv := api.NewServer(port)
 
 	go func() {

@@ -10,7 +10,7 @@ import (
 func GetConnection() (*sql.DB) {
 
 	connStr := os.Getenv("POSTGRESQL_URI")
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", connStr + "Guardian_Files")
 	if err != nil {
 		panic(err)
 	}

@@ -53,7 +53,7 @@ func MultipartFileStorage(w http.ResponseWriter, r *http.Request) {
 
 	unixTime := strconv.FormatInt(time.Now().UnixNano(), 10)
 	newFilename := unixTime + filepath.Ext(fileHeader.Filename)
-	path := "./uploads/" + newFilename
+	path := "./fileStorage/uploads/" + newFilename
 
 	
 	file := lib.MultipartToSinglepart(multiFile)

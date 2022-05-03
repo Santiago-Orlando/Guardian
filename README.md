@@ -30,7 +30,7 @@ bash start.sh
 
 ![docu2](https://user-images.githubusercontent.com/104360084/165974372-5abfc5f1-d439-4e3e-b12c-aef5a4117352.png)
 
-![docu3](https://user-images.githubusercontent.com/104360084/165974404-b7f8c2d0-f0a7-42db-b235-816b844ab2af.png)
+![image](https://user-images.githubusercontent.com/104360084/166463810-291e63bc-8d9e-4e7b-a4f4-c41b2fea11bd.png)
 
 
 I'm going to keep adding features to this project.

@@ -2,13 +2,15 @@
 
 ## Proyect description
 
-"Guardian" is a file-saving application and is made up of 3 microservices described below.
+"Guardian" is a file-saving application and is made up of 4 microservices described below.
 
 - Authentication registers, logs and allows users to change their passwords. It validates all the data and saves them in a __MongoDB__ database, at login it sets a cookie with a __JWT__ token.
 
 - Files Storage Receives, compresses, hashes, and stores files. It stores in a __PostgreSQL__ database the hash of the file (among other data) not allowing the same file to be uploaded twice, even if it belongs to two different users, both can access the file but it is only stored once.
 
-- Error Logger" Receives and stores errors, separated by different failure points, such as "authentication" or "system". This service pings the other two every minute and if any of them does not respond, an email is sent to the administrator. Made it in __JavaScript__
+- Error Logger Receives and stores errors, separated by different failure points, such as "authentication" or "system". This service pings the other two every minute and if any of them does not respond, an email is sent to the administrator. Made it in __JavaScript__
+
+- Proxy It Receives all requests and sends them to the corresponding routes.
 
 The Authentication and File Storage services are documented using __swagger__.
 

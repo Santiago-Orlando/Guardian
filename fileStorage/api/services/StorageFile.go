@@ -1,6 +1,7 @@
-package handlers
+package services
 
 import (
+	"Guardian/fileStorage/api/lib"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -8,16 +9,10 @@ import (
 	"strconv"
 	"time"
 
-	"Guardian/fileStorage/api/lib"
-
-	"github.com/go-playground/validator/v10"
+	"github.com/go-playground/validator"
 )
 
-func SinglepartFileStorage(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != "POST" {
-		w.WriteHeader(405)
-	}
+func StorageFile(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
 
@@ -25,20 +20,17 @@ func SinglepartFileStorage(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	userID, _ := ctx.Value("id").(string)
 
-
 	validate := validator.New()
-	err := validate.Var(filename, "required,gte=3,lte=30")
+	err := validate.Var(filename, "required,gte=3,lte=150")
 	if err != nil {
 		lib.ErrorHandler(err, "authentication")
 		w.WriteHeader(406)
 		return
 	}
-	
 
 	unixTime := strconv.FormatInt(time.Now().UnixNano(), 10)
 	newFilename := unixTime + filepath.Ext(filename)
 	path := "./fileStorage/uploads/" + newFilename
-
 
 	file, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -46,7 +38,6 @@ func SinglepartFileStorage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-
 
 	sha256 := lib.HashFile(file)
 

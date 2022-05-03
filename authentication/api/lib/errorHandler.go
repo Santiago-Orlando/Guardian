@@ -12,13 +12,13 @@ import (
 func ErrorHandler(err error, category string) {
 
 	data := m.Err{
-		Err: err.Error(),
+		Err:      err.Error(),
 		Category: category,
 	}
 	buf := bytes.NewBuffer(nil)
 
 	_ = json.NewEncoder(buf).Encode(data)
-	
+
 	url := "http://localhost:" + os.Getenv("PORT_ERROR_SERVICE") + "/errors"
 	contentType := "application/json"
 

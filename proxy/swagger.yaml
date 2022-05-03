@@ -7,24 +7,134 @@ info:
     name: Santiago Orlando
     url: https://www.linkedin.com/in/seorlando/
   description: |-
-    The purpose of this service is Register, Login,
-    and Password recover.
+    The purpose of this service is Store and serve files.
   license:
     name: MIT
     url: http://opensource.org/licenses/MIT
   termsOfService: |-
     There are no TOS at this moment, use at your own risk
-    i take no responsability
-  title: Authentication API.
+    i take no responsibility
+  title: Files Storage API.
   version: 1.0.0
 paths:
+  /multipart:
+    post:
+      description: Upload multipart file
+      operationId: Upload Multipart
+      consumes: 
+        - multipart/form-data
+      parameters:
+        - name: Upload Multipart
+          type: file
+          in: formData
+          description: "Upload a multipart file"
+        - name: Cookie
+          in: header
+          description: Cookie
+          required: true
+          type: string
+
+      tags:
+        - Storing
+      responses:
+        '201':
+          description: Successful file upload!
+        '202':
+          description: File is already in DB
+        '400':
+          description: File too big or File is not multipart
+        '405':
+          description: Method don't implemented, please use POST
+        '406':
+          description: Invalid filename.
+  /file:
+    get:
+      description: Send File
+      operationId: Send File
+      parameters:
+        - in: body
+          name: "filename"
+          description: The file is sended compress to increase speed on movile networks.
+          schema:
+            type: object
+            required:
+              - filename
+            properties:
+              file:
+                type: string
+                example: CatMeme1134.png
+      tags:
+        - Storing
+      responses:
+        '200':
+          description: Successful data sending!
+        '405':
+          description: Method don't implemented, please use GET
+        '406':
+          description: Invalid filename
+        '500':
+          description: Internal server error
+          
+    post:
+      description: send file (single part)
+      operationId: send file
+      parameters:
+        - in: query
+          name: filename
+          type: string
+          required: true
+          description: name of the binary file
+      tags:
+        - Storing
+      responses:
+        '201':
+          description: Successful data sending!
+        '202':
+          description: File is already in DB
+        '400':
+          description: Bad request!
+        '405':
+          description: Method don't implemented, please use POST
+        '406':
+          description: Invalid filename
+        '500':
+          description: Internal server error
+    delete:
+      description: Delete file
+      operationId: Delete file
+      parameters:
+        - in: body
+          name: filename
+          description: Name of the file to be deleted.
+          schema:
+            type: object
+            required: 
+              - filename
+            properties:
+              filename:
+                type: string
+                example: CatMeme1134.png
+      tags:
+        - Storing
+      responses:
+        '202':
+          description: File is already in DB
+        '400':
+          description: Bad request!
+        '405':
+          description: Method don't implemented, please use DELETE
+        '406':
+          description: Invalid filename
+        '500':
+          description: Internal server error
+          
   /forgotPassword:
     post:
       description: Send email to user with a recovery token
       operationId: Forgot Password
       parameters:
         - in: body
-          name: forgotPassword
+          name: Forgot Password
           description: The user email address
           schema:
             type: object
@@ -34,6 +144,8 @@ paths:
               email:
                 type: string
                 example: Jhon@gmail.com
+      tags:
+        - Authentication
       responses:
         '200':
           description: successful email sending!
@@ -49,7 +161,7 @@ paths:
       operationId: Login
       parameters:
         - in: body
-          name: login
+          name: Login
           description: The user login data
           schema:
             type: object
@@ -65,6 +177,8 @@ paths:
                 minLength: 8
                 maxLength: 60
                 example: SuperDifficultPassword
+      tags:
+        - Authentication
       responses:
         '200':
           description: successful data sending!
@@ -102,6 +216,8 @@ paths:
                 minLength: 8
                 maxLength: 60
                 example: SuperDifficultPassword
+      tags:
+        - Authentication
       responses:
         '200':
           description: successful data sending!
@@ -133,6 +249,8 @@ paths:
                 minLength: 8
                 maxLength: 60
                 example: SuperDifficultNewPassword
+      tags:
+        - Authentication
       responses:
         '200':
           description: successful data sending!

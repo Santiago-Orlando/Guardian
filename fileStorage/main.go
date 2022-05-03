@@ -15,7 +15,7 @@ func main() {
 
 	l := log.New(os.Stdout, "---> FileStorage Service ", log.LstdFlags)
 
-	port := os.Getenv("PORT_FILESTORAGE_SERVICE")
+	port := ":" + os.Getenv("PORT_FILESTORAGE_SERVICE")
 	srv := api.NewServer(port)
 
 	go func() {

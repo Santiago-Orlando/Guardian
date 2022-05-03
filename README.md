@@ -16,16 +16,10 @@ The Authentication and File Storage services are documented using __swagger__.
 
 I assume you have installed [__Golang__](https://go.dev/dl/), [__Node.js__](https://nodejs.org/en/), [__PostgreSQL__](https://www.postgresql.org/download/), [__MongoDB__](https://www.mongodb.com/docs/manual/?_ga=2.168585697.1162239620.1651099704-1672672351.1650840520) and __Bash__. 
 
-To test use:
+To load all services use:
 ```bash
 bash start.sh
 ```
-
-To load all services use:
-```bash
-bash start.sh --full
-```
-Both will open the documentation pages in your default browser.
 
 ##### Remember the script compiles the code "Guardian" folder should be inside $GOPATH/src!
 

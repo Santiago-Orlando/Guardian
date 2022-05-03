@@ -54,8 +54,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	// Compare the password that was send with the one in the DB
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userData.Password))
 	if err != nil {
-		lib.ErrorHandler(err, "system")
-		w.WriteHeader(500)
+		lib.ErrorHandler(err, "auth")
+		w.WriteHeader(401)
 		return
 	}
 

@@ -1,23 +1,18 @@
-package handlers
+package services
 
 import (
+	"Guardian/fileStorage/api/lib"
+	m "Guardian/fileStorage/api/models"
+
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"os"
 
-	"Guardian/fileStorage/api/lib"
-	m "Guardian/fileStorage/api/models"
-
-	"github.com/go-playground/validator/v10"
+	"github.com/go-playground/validator"
 )
 
-func FileSender(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != "GET" {
-		w.WriteHeader(405)
-	}
-
+func SendFile(w http.ResponseWriter, r *http.Request) {
 
 	ctx := r.Context()
 	userID, _ := ctx.Value("id").(string)
@@ -30,7 +25,6 @@ func FileSender(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-
 
 	validate := validator.New()
 	err = validate.Struct(filename)

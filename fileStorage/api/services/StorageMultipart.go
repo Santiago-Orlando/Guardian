@@ -1,25 +1,19 @@
-package handlers
+package services
 
 import (
+	"Guardian/fileStorage/api/lib"
 	"fmt"
 	"net/http"
 	"path/filepath"
 	"strconv"
 	"time"
 
-	"github.com/go-playground/validator/v10"
-
-	"Guardian/fileStorage/api/lib"
+	"github.com/go-playground/validator"
 )
 
-const MAX_UPLOAD_SIZE int64 = 1024 * 1024 //* 1024 * 10 // 10GB
+const MAX_UPLOAD_SIZE int64 = 1024 * 1024 * 1024 * 10 // 10GB
 
-func MultipartFileStorage(w http.ResponseWriter, r *http.Request) {
-
-	if r.Method != "POST" {
-		w.WriteHeader(405)
-	}
-
+func StorageMultipart(w http.ResponseWriter, r *http.Request) {
 
 	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
 	if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
@@ -28,15 +22,13 @@ func MultipartFileStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
-	multiFile, fileHeader, err := r.FormFile("file")
+	multiFile, fileHeader, err := r.FormFile("filename")
 	if err != nil {
 		lib.ErrorHandler(err, "web")
 		http.Error(w, err.Error(), 400)
 		return
 	}
 	defer multiFile.Close()
-
 
 	validate := validator.New()
 	err = validate.Var(fileHeader.Filename, "required,gte=3,lte=30")
@@ -46,21 +38,16 @@ func MultipartFileStorage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-
 	ctx := r.Context()
 	userID, _ := ctx.Value("id").(string)
-
 
 	unixTime := strconv.FormatInt(time.Now().UnixNano(), 10)
 	newFilename := unixTime + filepath.Ext(fileHeader.Filename)
 	path := "./fileStorage/uploads/" + newFilename
 
-	
 	file := lib.MultipartToSinglepart(multiFile)
 
-
 	sha256 := lib.HashFile(file)
-
 
 	data, err := lib.DuplicatePreventor(sha256, userID)
 	if err == nil {
@@ -81,7 +68,6 @@ func MultipartFileStorage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		return
 	}
-
 
 	err = lib.FileSaveDB(fileHeader.Filename, sha256, newFilename, userID)
 	if err != nil {

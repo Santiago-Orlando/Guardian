@@ -8,14 +8,14 @@ import (
 	"syscall"
 	"time"
 
-	"Guardian/authentication/api"
+	"Guardian/proxy/api"
 )
 
 func main() {
 
-	l := log.New(os.Stdout, "Authentication Service ", log.LstdFlags)
+	l := log.New(os.Stdout, "---> Proxy Service ", log.LstdFlags)
 
-	port := ":" + os.Getenv("PORT_AUTHENTICATION_SERVICE")
+	port := ":" + os.Getenv("PORT_PROXY_SERVICE")
 	srv := api.NewServer(port)
 
 	go func() {

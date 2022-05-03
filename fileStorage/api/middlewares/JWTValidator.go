@@ -2,7 +2,6 @@ package middlewares
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -36,7 +35,6 @@ func JWTValidator(next http.HandlerFunc) http.HandlerFunc {
 		if err != nil {
 			if err == jwt.ErrSignatureInvalid {
 				w.WriteHeader(401)
-				fmt.Fprintf(w, "%v", err)
 				return
 			}
 			w.WriteHeader(400)
@@ -45,7 +43,6 @@ func JWTValidator(next http.HandlerFunc) http.HandlerFunc {
 
 		if !parsedToken.Valid {
 			w.WriteHeader(401)
-			fmt.Fprintf(w, "%v", err)
 			return
 		}
 

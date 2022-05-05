@@ -1,8 +1,10 @@
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 
 const { GMAIL, GMAIL_PASSWORD } = process.env;
 
 const createTrans = () => {
+  if (!GMAIL || !GMAIL_PASSWORD) return;
+
   const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -16,6 +18,8 @@ const createTrans = () => {
 };
 
 const sendMail = (email, service) => {
+  if (!email) return;
+
   const transporter = createTrans();
   const info = transporter.sendMail({
     from: GMAIL,
@@ -25,4 +29,4 @@ const sendMail = (email, service) => {
   });
 };
 
-export default sendMail
+export default sendMail;

@@ -1,0 +1,26 @@
+FROM node:latest
+
+LABEL maintainer="Santiago Orlando <santiagoelias.orlando@gmail.com"
+
+WORKDIR /errorLogger
+
+COPY . .
+
+RUN npm i
+
+ENV PORT_ERROR_SERVICE="3001"
+
+ENV AUTHENTICATION_URL="http://192.168.1.134"
+ENV FILESTORAGE_URL="http://192.168.1.134"
+
+ENV PORT_AUTHENTICATION_SERVICE="3002"
+ENV PORT_FILESTORAGE_SERVICE="3003"
+ENV POSTGRESQL_URI="postgresql://@192.168.1.134:3007"
+
+
+ENV GMAIL=
+ENV GMAIL_PASSWORD=
+ENV EMAIL=
+
+
+CMD [ "node server.js" ]

@@ -1,0 +1,28 @@
+FROM golang:latest
+
+LABEL maintainer="Santiago Orlando <santiagoelias.orlando@gmail.com"
+
+WORKDIR /authentication
+
+COPY go.mod .
+
+COPY go.sum .
+
+RUN go mod download
+
+COPY . .
+
+ENV PORT_PROXY_SERVICE="3004"
+
+ENV AUTHENTICATION_URL="http://192.168.1.134"
+ENV PORT_AUTHENTICATION_SERVICE="3002"
+ENV FILESTORAGE_URL="http://192.168.1.134"
+ENV PORT_FILESTORAGE_SERVICE="3003"
+ENV AUTHENTICATION_URL="http://192.168.1.134"
+ENV PORT_AUTHENTICATION_SERVICE="3002"
+ENV FILESTORAGE_URL="http://192.168.1.134"
+ENV PORT_FILESTORAGE_SERVICE="3003"
+
+RUN go build main.go
+
+CMD [ "./main" ]

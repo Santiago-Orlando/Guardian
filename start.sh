@@ -1,68 +1,54 @@
 #!/bin/bash
 
-chmod 777 config.sh
-source config.sh
 
+host_IP=$(hostname -I | awk '{split($0,a," "); print a[1]}')
 
-cd authentication
-go build main.go
+sed -i '23 i ENV MONGO_URI="mongodb://'"$host_IP"':3005/authentication"' authentication/Dockerfile 
 
-cd ../fileStorage
-go build main.go
+sed -i '13 i ENV AUTHENTICATION_URL=''"http://'"$host_IP"'"' errorLogger/Dockerfile
+sed -i '14 i ENV FILESTORAGE_URL=''"http://'"$host_IP"'"' errorLogger/Dockerfile
+sed -i '18 i ENV POSTGRESQL_URI=''"postgresql://@'"$host_IP"':3007"' errorLogger/Dockerfile
 
-cd ../proxy
-go build main.go
+sed -i '20 i ENV POSTGRESQL_URI=''"postgresql://@'"$host_IP"':3006"' fileStorage/Dockerfile
 
-cd ..
+sed -i '17 i ENV AUTHENTICATION_URL=''"http://'"$host_IP"'"' proxy/Dockerfile
+sed -i '18 i ENV PORT_AUTHENTICATION_SERVICE="3002"' proxy/Dockerfile
+sed -i '19 i ENV FILESTORAGE_URL=''"http://'"$host_IP"'"' proxy/Dockerfile
+sed -i '20 i ENV PORT_FILESTORAGE_SERVICE="3003"' proxy/Dockerfile
 
+docker pull mongo
+docker pull postgres
 
-createdb "Guardian_Files" > /dev/null 2>&1
+docker create --name mongo_db -p 3005:27017 mongo
 
-mkdir fileStorage/uploads > /dev/null 2>&1
+docker build -t error_logger ./errorLogger/
+docker build -t error_logger_db ./errorLogger/database/
+docker build -t authentication ./authentication/ 
+docker build -t file_storage ./fileStorage/
+docker build -t file_storage_db ./fileStorage/api/database/
+docker build -t proxy ./proxy/
 
+docker create --name error_logger -p 3001:3001 error_logger
+docker create --name error_logger_db -p 3007:3007 error_logger_db
+docker create --name authentication -p 3002:3002 authentication
+docker create --name file_storage -p 3003:3003 file_storage
+docker create --name file_storage_db -p 3006:3006 file_storage_db
+docker create --name proxy -p 3004:3004 proxy
 
-function Error_Logger() {
+docker start mongo_db 
+docker start error_logger_db
+docker start file_storage_db
 
-    npm i --prefix errorLogger/
-    npm start --prefix errorLogger/ 
+docker start error_logger 
+docker start authentication 
+docker start file_storage 
+docker start proxy 
 
-}
-
-function Load_Services(){
-
-    ./authentication/main &
-    ./fileStorage/main &
-    ./proxy/main &
-    Error_Logger &
-
-}
-
-function Services_Killer() {
-
-    lsof -i tcp":$PORT_ERROR_SERVICE" | awk "/${PORT_AUTHENTICATION_SERVICE:1}"'/{print $2}' | xargs kill > /dev/null 2>&1
-    lsof -i tcp":$PORT_AUTHENTICATION_SERVICE" | awk "/${PORT_AUTHENTICATION_SERVICE:1}"'/{print $2}' | xargs kill > /dev/null 2>&1
-    lsof -i tcp":$PORT_FILESTORAGE_SERVICE" | awk "/${PORT_FILESTORAGE_SERVICE:1}"'/{print $2}' | xargs kill > /dev/null 2>&1
-    lsof -i tcp":$PORT_PROXY_SERVICE" | awk "/${PORT_PROXY_SERVICE:1}"'/{print $2}' | xargs kill > /dev/null 2>&1
-
-} 
-
-
-createdb "Guardian_Errors" > /dev/null 2>&1
-
-
-psql $USER -h $POSTGRESQL_URL -d "Guardian_Errors" -f errorLogger/database/TABLES.SQL > /dev/null 2>&1 &
-psql $USER -h $POSTGRESQL_URL -d "Guardian_Files" -f fileStorage/api/database/FILES.SQL > /dev/null 2>&1 &
-
-
-Load_Services > /dev/null 2>&1 &
-open http://localhost:${PORT_PROXY_SERVICE}/docs > /dev/null 2>&1 &
-
-
-echo "If you want to stop the services press any letter."
-
+echo ""
+echo "Press any key to stop the services!"
 read end
 
-Services_Killer > /dev/null 2>&1
+docker kill $(docker ps -q)
 
 echo "Bye!"
 exit 0

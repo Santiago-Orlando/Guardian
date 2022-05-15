@@ -36,7 +36,7 @@ func SendFile(w http.ResponseWriter, r *http.Request) {
 
 	serverName := lib.GetFileFromDB(userID, filename.Filename)
 
-	file, err := os.Open("./fileStorage/uploads/" + serverName)
+	file, err := os.Open("/files/" + serverName)
 	if err != nil {
 		lib.ErrorHandler(err, "web")
 		w.WriteHeader(400)

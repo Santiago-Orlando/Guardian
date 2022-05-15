@@ -9,7 +9,6 @@ import (
 
 func Routes() {
 
-	go http.HandleFunc("/multipart", m.JWTValidator(h.Multipart))
 	go http.HandleFunc("/file", m.JWTValidator(h.File))
 
 }

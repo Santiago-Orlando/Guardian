@@ -9,7 +9,7 @@ func UpdatePassword(w http.ResponseWriter, r *http.Request) {
 
 	endpoint := "/update-password"
 
-	route := URL + PORT + endpoint
+	route := "http://" + URL + PORT + endpoint
 
 	req, err := http.NewRequest(r.Method, route, r.Body)
 	if err != nil {

@@ -2,7 +2,6 @@ package lib
 
 import (
 	"compress/gzip"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -14,7 +13,7 @@ func FileSaver(file []byte, path string) error {
 
 	dst, err := os.Create(path)
 	if err != nil {
-		fmt.Println("create ", err)
+		ErrorHandler(err, "system")
 		return err
 	}
 	defer dst.Close()

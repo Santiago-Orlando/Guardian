@@ -14,11 +14,14 @@ import (
 
 func StorageFile(w http.ResponseWriter, r *http.Request) {
 
+	const MAX_UPLOAD_SIZE int64 = 1024 * 1024 * 100 // 100MB
+
 	r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
 
 	filename := r.URL.Query().Get("filename")
 	ctx := r.Context()
 	userID, _ := ctx.Value("id").(string)
+
 
 	validate := validator.New()
 	err := validate.Var(filename, "required,gte=3,lte=150")
@@ -30,7 +33,7 @@ func StorageFile(w http.ResponseWriter, r *http.Request) {
 
 	unixTime := strconv.FormatInt(time.Now().UnixNano(), 10)
 	newFilename := unixTime + filepath.Ext(filename)
-	path := "./fileStorage/uploads/" + newFilename
+	path := "/files/" + newFilename
 
 	file, err := ioutil.ReadAll(r.Body)
 	if err != nil {

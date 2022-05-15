@@ -20,7 +20,6 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)
 	}
 
-
 	connection := db.GetConnection()
 
 	user := &m.User{}
@@ -52,7 +51,7 @@ func Register(w http.ResponseWriter, r *http.Request) {
 	_, err = connection.InsertOne(context.Background(), user)
 	if err != nil {
 		lib.ErrorHandler(err, "database")
-		w.WriteHeader(500)
+		//w.WriteHeader(500)
 		return
 	}
 

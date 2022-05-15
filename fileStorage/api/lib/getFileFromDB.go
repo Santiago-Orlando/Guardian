@@ -1,8 +1,6 @@
 package lib
 
 import (
-	"fmt"
-
 	"Guardian/fileStorage/api/database"
 )
 
@@ -16,10 +14,8 @@ func GetFileFromDB(userID string, filename string) string {
 
 	err := db.QueryRow(query, userID, filename).Scan(&serverName)
 	if err != nil {
-		fmt.Println(err)
+		ErrorHandler(err, "database")
 	}
-
-	fmt.Println(serverName)
 
 	return serverName
 }

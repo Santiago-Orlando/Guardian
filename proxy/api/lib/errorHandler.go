@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	m "Guardian/fileStorage/api/models"
+	m "Guardian/proxy/api/models"
 )
 
 func ErrorHandler(err error, category string) {

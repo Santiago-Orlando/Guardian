@@ -1,0 +1,132 @@
+version: "3.8"
+services:
+  
+  authentication:
+    build: ./authentication
+    ports:
+      - 3002:3002
+    environment:
+      PORT_AUTHENTICATION_SERVICE: 3002
+      JWTSecret: secret
+      MONGO_URL: mongodb://AUTHENTICATION_DB_URL/
+      GMAIL: ""
+      GMAIL_PW: ""
+    depends_on:
+      - authentication_db
+    networks:
+      guardian_net:
+        aliases:
+          - AUTHENTICATION_URL
+  
+  error_logger:
+    build: ./errorLogger
+    ports:
+      - 3001:3001
+    environment:
+      POSTGRESQL_URI: host = ERROR_LOGGER_DB_URL port = 5432 user = postgres password = your_password dbname = Guardian_Errors sslmode = disable
+      PORT_AUTHENTICATION_SERVICE: 3002
+      PORT_FILESTORAGE_SERVICE: 3003
+      PORT_ERROR_SERVICE: 3001
+      GMAIL: ""
+      GMAIL_PW: ""
+      EMAIL: ""
+    depends_on:
+      - authentication
+      - file_storage
+      - error_logger_db
+    networks:
+      guardian_net:
+        aliases:
+          - ERROR_LOGGER_URL
+  
+  file_storage:
+    build: ./fileStorage
+    ports:
+      - 3003:3003
+    volumes:
+      - files_file_system:/files
+    environment:
+      POSTGRESQL_URI: host = FILE_STORAGE_DB_URL port = 5432 user = postgres password = your_password dbname = Guardian_Files sslmode = disable
+      JWTSecret: secret
+      PORT_FILESTORAGE_SERVICE: 3003
+    depends_on:
+      - file_storage_db
+    networks:
+      guardian_net:
+        aliases:
+          - FILE_STORAGE_URL
+  
+  proxy:
+    build: ./proxy
+    ports:
+      - 3004:3004
+    environment:
+      PORT_PROXY_SERVICE: 3004
+      PORT_AUTHENTICATION_SERVICE: 3002
+      PORT_FILESTORAGE_SERVICE: 3003
+    depends_on:
+      - authentication
+      - file_storage
+    networks:
+      guardian_net:
+        aliases:
+          - PROXY_URL
+  
+  authentication_db:
+    image: mongo
+    restart: always
+    ports:
+      - 3005:27017
+    volumes:
+      - db_users:/data/db
+    networks:
+      guardian_net:
+        aliases:
+          - AUTHENTICATION_DB_URL
+  
+  error_logger_db:
+    image: postgres
+    ports:
+      - 3006:5432
+    restart: always
+    volumes:
+      - db_err:/var/lib/postgresql/data
+      - ./errorLogger/database/TABLES.sql:/docker-entrypoint-initdb.d/create_table.sql
+    environment:
+      POSTGRES_PASSWORD: your_password
+    networks:
+      guardian_net:
+        aliases:
+          - ERROR_LOGGER_DB_URL
+  
+  file_storage_db:
+    image: postgres
+    ports:
+      - 3007:5432
+    restart: always
+    volumes:
+      - db_files:/var/lib/postgresql/data
+      - ./fileStorage/api/database/FILES.sql:/docker-entrypoint-initdb.d/create_table.sql
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: Guardian_Files
+    networks:
+      guardian_net:
+        aliases:
+          - FILE_STORAGE_DB_URL
+
+networks:
+  guardian_net:
+    name: guardian_net
+    driver: bridge
+    ipam:
+      driver: default
+
+volumes:
+  db_users:
+    driver: local
+  db_err:
+  db_files:
+  files_file_system:
+

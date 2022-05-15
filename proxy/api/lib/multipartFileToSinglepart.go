@@ -2,7 +2,6 @@ package lib
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"mime/multipart"
 )
@@ -13,7 +12,7 @@ func MultipartToSinglepart(multi multipart.File) []byte {
 
 	_, err := io.Copy(buf, multi)
 	if err != nil {
-		fmt.Println(err)
+		ErrorHandler(err, "system")
 	}
 
 	return buf.Bytes()

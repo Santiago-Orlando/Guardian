@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.18.2-alpine3.15
 
 LABEL maintainer="Santiago Orlando <santiagoelias.orlando@gmail.com"
 
@@ -12,16 +12,7 @@ RUN go mod download
 
 COPY . .
 
-
-ENV PORT_AUTHENTICATION_SERVICE="3002"
-
-ENV GMAIL=""
-ENV GMAIL_PW=""
-
-ENV JWTSecret="secret"
-
-ENV MONGO_URI="mongodb://192.168.1.134:3005/authentication"
-ENV MONGO_URI="mongodb://192.168.1.134:3005/authentication"
+EXPOSE 3002
 
 RUN go build main.go
 

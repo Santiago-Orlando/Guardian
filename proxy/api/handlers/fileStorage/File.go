@@ -7,13 +7,13 @@ import (
 	"os"
 )
 
-var URL string = os.Getenv("FILESTORAGE_URL")
+var URL string = "FILE_STORAGE_URL"
 var PORT string = ":" + os.Getenv("PORT_FILESTORAGE_SERVICE")
 
 func File(w http.ResponseWriter, r *http.Request) {
 
 	endpoint := "/file"
-	route := URL + PORT + endpoint
+	route := "http://" + URL + PORT + endpoint
 
 	cookie := r.Header.Get("Cookie")
 

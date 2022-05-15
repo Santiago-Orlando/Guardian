@@ -12,12 +12,14 @@ import (
 
 func GetConnection() (*mongo.Collection) {
 
-	serverAPIOptions := options.ServerAPI(options.ServerAPIVersion1)
+
 	clientOptions := options.Client().
-		ApplyURI(os.Getenv("MONGO_URI")).
-		SetServerAPIOptions(serverAPIOptions)
+		ApplyURI(os.Getenv("MONGO_URL"))
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+
 	defer cancel()
+
 	client, err := mongo.Connect(ctx, clientOptions)
 	if err != nil {
 		log.Fatal(err)

@@ -78,7 +78,7 @@ func DeleteFile(w http.ResponseWriter, r *http.Request) {
 
 	db.QueryRow(query, userID, file.Sha)
 
-	err = lib.DeleteFile("./fileStorage/uploads/" + file.NewFileName)
+	err = lib.DeleteFile("/files/" + file.NewFileName)
 	if err != nil {
 		lib.ErrorHandler(err, "system")
 		w.WriteHeader(500)

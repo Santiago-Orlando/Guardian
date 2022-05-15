@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-var URL string = os.Getenv("AUTHENTICATION_URL")
+var URL string = "AUTHENTICATION_URL"
 var PORT string = ":" + os.Getenv("PORT_AUTHENTICATION_SERVICE")
 
 func ForgotPassword(w http.ResponseWriter, r *http.Request) {
@@ -14,7 +14,7 @@ func ForgotPassword(w http.ResponseWriter, r *http.Request) {
 
 	endpoint := "/forgot-password"
 
-	route := URL + PORT + endpoint
+	route := "http://" + URL + PORT + endpoint
 
 	req, err := http.NewRequest(r.Method, route, r.Body)
 	if err != nil {

@@ -12,15 +12,7 @@ RUN go mod download
 
 COPY . .
 
-
-ENV PORT_FILESTORAGE_SERVICE="3003"
-
-ENV JWTSecret="secret"
-
-ENV POSTGRESQL_URI="postgresql://@192.168.1.134:3006"
-ENV POSTGRESQL_URI="postgresql://@192.168.1.134:3006"
-
-
+EXPOSE 3003
 
 RUN go build main.go
 

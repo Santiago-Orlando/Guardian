@@ -1,9 +1,9 @@
 import nodemailer from "nodemailer";
 
-const { GMAIL, GMAIL_PASSWORD } = process.env;
+const { GMAIL, GMAIL_PW } = process.env;
 
 const createTrans = () => {
-  if (!GMAIL || !GMAIL_PASSWORD) return;
+  if (!GMAIL || !GMAIL_PW) return;
 
   const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -11,7 +11,7 @@ const createTrans = () => {
     secure: true,
     auth: {
       user: GMAIL,
-      pass: GMAIL_PASSWORD,
+      pass: GMAIL_PW,
     },
   });
   return transport;

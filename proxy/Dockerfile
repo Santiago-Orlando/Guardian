@@ -1,8 +1,8 @@
-FROM golang:latest
+FROM golang:1.18.2-alpine3.15
 
 LABEL maintainer="Santiago Orlando <santiagoelias.orlando@gmail.com"
 
-WORKDIR /authentication
+WORKDIR /proxy
 
 COPY go.mod .
 
@@ -12,16 +12,7 @@ RUN go mod download
 
 COPY . .
 
-ENV PORT_PROXY_SERVICE="3004"
-
-ENV AUTHENTICATION_URL="http://192.168.1.134"
-ENV PORT_AUTHENTICATION_SERVICE="3002"
-ENV FILESTORAGE_URL="http://192.168.1.134"
-ENV PORT_FILESTORAGE_SERVICE="3003"
-ENV AUTHENTICATION_URL="http://192.168.1.134"
-ENV PORT_AUTHENTICATION_SERVICE="3002"
-ENV FILESTORAGE_URL="http://192.168.1.134"
-ENV PORT_FILESTORAGE_SERVICE="3003"
+EXPOSE 3004
 
 RUN go build main.go
 

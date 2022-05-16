@@ -3,16 +3,18 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"github.com/go-playground/validator/v10"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 
 	db "Guardian/authentication/api/database"
 	"Guardian/authentication/api/lib"
 	m "Guardian/authentication/api/models"
 )
-
 
 func Register(w http.ResponseWriter, r *http.Request) {
 
@@ -40,7 +42,17 @@ func Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	password, err := bcrypt.GenerateFromPassword([]byte(user.Password), 15)
+	filter := bson.D{primitive.E{Key: "email", Value: user.Email}}
+
+	res := connection.FindOne(context.Background(), filter)
+	if res.Err() == nil {
+		err = errors.New("user is already in the DB")
+		lib.ErrorHandler(err, "authentication")
+		w.WriteHeader(400)
+		return
+	}
+
+	password, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		lib.ErrorHandler(err, "system")
 		w.WriteHeader(500)

@@ -19,7 +19,7 @@ func ErrorHandler(err error, category string) {
 
 	_ = json.NewEncoder(buf).Encode(data)
 
-	url := "http://localhost:" + os.Getenv("PORT_ERROR_SERVICE") + "/errors"
+	url := "http://ERROR_LOGGER_URL:" + os.Getenv("PORT_ERROR_SERVICE") + "/errors"
 	contentType := "application/json"
 
 	http.Post(url, contentType, buf)

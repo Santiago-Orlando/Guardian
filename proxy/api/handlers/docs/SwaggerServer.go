@@ -8,7 +8,7 @@ import (
 
 func SwaggerServer(w http.ResponseWriter, r *http.Request) {
 
-	file, err := os.Open("./proxy/swagger.yaml")
+	file, err := os.Open("./swagger.yaml")
 	if err != nil {
 		w.WriteHeader(500)
 		return

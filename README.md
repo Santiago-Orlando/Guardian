@@ -1,30 +1,51 @@
 # Guardian
 
-## Proyect description
+## Overview
 
 "Guardian" is a file-saving application and is made up of 4 microservices described below.
 
-- Authentication registers, logs and allows users to change their passwords. It validates all the data and saves them in a __MongoDB__ database, at login it sets a cookie with a __JWT__ token.
+- Authentication:
+    - Login
+    - Register
+    - Password recovery
+ 
+- File Storage:
+    - Compresses recived files
+    - Store files ( In docker File System )
+    - Send files
+    - Delete files
+    - Prevent file duplication
+    - File hashing
 
-- Files Storage Receives, compresses, hashes, and stores files. It stores in a __PostgreSQL__ database the hash of the file (among other data) not allowing the same file to be uploaded twice, even if it belongs to two different users, both can access the file but it is only stored once.
+- Error Logger:
+    - Store Errors
+    - Send Email to an admin ( if any service fail )
+ 
+- Proxy:
+    - Unify all routes
 
-- Error Logger Receives and stores errors, separated by different failure points, such as "authentication" or "system". This service pings the other two every minute and if any of them does not respond, an email is sent to the administrator. Made it in __JavaScript__
+#### Project description
 
-- Proxy It Receives all requests and sends them to the corresponding routes.
+I have used __MongoDB__ to store the users, the authentication of the users is made with a __JWT__ Token and the password recovery is achieved throw an email with a token. The email is sent using the standard library of __Golang__ "net/smtp".
 
-The Authentication and File Storage services are documented using __swagger__.
+The files could be sent using a multipart/form-data or a base64 and there are stored in the docker filesystem, before storing the file I load the name, hash, user_id, and the new name of the file used in the FS in a __PostgreSQL__ Database.
+I Prevent the file duplication using the hash, so even if it belongs to two different users, both can access the file but it is only stored once.
+
+The errors are stored in a __PostgreSQL__ Database and that service pings the other two services if anyone doesn't respond it sends an email to an admin.
+This service is made in __JavaScript__
+
+Proxy unifies all routes and converts a multipart/form-data file to base64. Also, have a "/docs" route where the documentation is displayed in a friendly mode.
+
+The documentation is made with __Swagger__.
 
 ## Start the Proyect
 
-I assume you have installed __docker-compose__ and __Bash__. 
+I assume you have __docker-compose__ and __Bash__. 
 
 To load all services use:
 ```bash
 bash start.sh
 ```
-
-##### Remember the script compiles the code "Guardian" folder should be inside $GOPATH/src!
-
 
 ## Documentation images
 

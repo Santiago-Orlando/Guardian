@@ -1,21 +1,19 @@
 import pool from "../database/index.js";
 
 class ErrorController {
-
   static async errorStore(req, res) {
-
     const { err, category } = req.body;
 
     const query = `INSERT INTO ${category} ( err ) VALUES ( $1 )`;
 
     try {
       await pool.query(query, [err]);
+      return res.sendStatus(200);
     } catch (e) {
-        return res.sendStatus(400)
+      console.log("catch");
+      return res.sendStatus(400);
     }
-    return res.sendStatus(200)
   }
-
 }
 
-export default ErrorController
+export default ErrorController;

@@ -5,7 +5,7 @@ type User struct {
 
 	ID				string 				`bson:"_id,omitempty" json:"id,omitempty"`
 	Username		string 				`json:"username" validate:"required"`
-	Email			string				`json:"email" validate:"required,email"`
+	Email			string				`bson:"email" json:"email" validate:"required,email"`
 	Password		string				`json:"password" validate:"required,gte=8,lte=60"`
 	RecoveryToken	string				`bson:"recoveryToken" json:"recoveryToken"`
 

@@ -7,6 +7,7 @@ services:
       - 3002:3002
     environment:
       PORT_AUTHENTICATION_SERVICE: 3002
+      PORT_ERROR_SERVICE: 3001
       JWTSecret: secret
       MONGO_URL: mongodb://AUTHENTICATION_DB_URL/
       GMAIL: ""
@@ -23,7 +24,7 @@ services:
     ports:
       - 3001:3001
     environment:
-      POSTGRESQL_URI: host = ERROR_LOGGER_DB_URL port = 5432 user = postgres password = your_password dbname = Guardian_Errors sslmode = disable
+      PASSWORD: your_password
       PORT_AUTHENTICATION_SERVICE: 3002
       PORT_FILESTORAGE_SERVICE: 3003
       PORT_ERROR_SERVICE: 3001
@@ -33,7 +34,7 @@ services:
     depends_on:
       - authentication
       - file_storage
-      - error_logger_db
+      - error_logger_db1
     networks:
       guardian_net:
         aliases:
@@ -49,6 +50,7 @@ services:
       POSTGRESQL_URI: host = FILE_STORAGE_DB_URL port = 5432 user = postgres password = your_password dbname = Guardian_Files sslmode = disable
       JWTSecret: secret
       PORT_FILESTORAGE_SERVICE: 3003
+      PORT_ERROR_SERVICE: 3001
     depends_on:
       - file_storage_db
     networks:
@@ -64,6 +66,7 @@ services:
       PORT_PROXY_SERVICE: 3004
       PORT_AUTHENTICATION_SERVICE: 3002
       PORT_FILESTORAGE_SERVICE: 3003
+      PORT_ERROR_SERVICE: 3001
     depends_on:
       - authentication
       - file_storage
@@ -84,7 +87,7 @@ services:
         aliases:
           - AUTHENTICATION_DB_URL
   
-  error_logger_db:
+  error_logger_db1:
     image: postgres
     ports:
       - 3006:5432
@@ -94,6 +97,7 @@ services:
       - ./errorLogger/database/TABLES.sql:/docker-entrypoint-initdb.d/create_table.sql
     environment:
       POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: Guardian_Errors
     networks:
       guardian_net:
         aliases:
